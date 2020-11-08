@@ -2,7 +2,7 @@
 import socket
 
 HOST = socket.gethostname()
-PORT = 1234
+PORT = 12345
 HEADERSIZE = 10
 print("hosting on ", HOST)
 
@@ -19,3 +19,17 @@ while True:
 	msg = "Welcome to Dynamic Securities server!"
 	msg = f'{len(msg):<{HEADERSIZE}}'+msg
 	client.send(bytes(msg,"utf-8"))
+
+	while True:
+		msg = input("data to send: ")
+		if msg == "break":
+			break
+
+		msg = f'{len(msg):<{HEADERSIZE}}'+msg
+		client.send(bytes(msg, "utf-8"))
+
+	print("connection with ", address, " closed")
+	client.close()
+	msg = input("enter y to listen again or n to close server: ")
+	if msg == 'n':
+		break

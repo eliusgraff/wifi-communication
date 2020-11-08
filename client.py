@@ -2,7 +2,7 @@
 import socket
 
 HOST = socket.gethostname()
-PORT = 1234
+PORT = 12345
 HEADERSIZE = 10
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,6 +27,4 @@ while True:
             full_msg = ''
 
     print(full_msg)
-
-
     print(msg)
