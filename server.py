@@ -25,13 +25,19 @@ while True:
 	client.send(bytes(msg,"utf-8"))
 
 	while True:
-		msg = "yposition: ", yinput.value, "	xposition", xinput.value"
+		msg = yinput.value
 		#if msg == "break":
 		#	break
 
 		msg = f'{len(msg):<{HEADERSIZE}}'+msg
 		client.send(bytes(msg, "utf-8"))
+
+		msg = xinput.value
 		
+		msg = f'{len(msg):<{HEADERSIZE}}'+msg
+		client.send(bytes(msg, "utf-8"))
+
+
 		sleep(0.05)
 
 	print("connection with ", address, " closed")

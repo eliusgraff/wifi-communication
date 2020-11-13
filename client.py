@@ -22,9 +22,27 @@ while True:
 
         if len(full_msg)-HEADERSIZE == msglen:
             #print("full message recieved:")
+            yval = full_msg[HEADERSIZE:]
             print(full_msg[HEADERSIZE:])
             new_msg = True
             full_msg = ''
+
+            msg = s.recv(16)
+        if new_msg:
+            #print(f"new message length: {msg[:HEADERSIZE]}")
+            msglen = int(msg[:HEADERSIZE])
+            new_msg = False
+
+        full_msg += msg.decode("utf-8")
+
+        if len(full_msg)-HEADERSIZE == msglen:
+            #print("full message recieved:")
+            xval = full_msg[HEADERSIZE:]
+            print(full_msg[HEADERSIZE:])
+            new_msg = True
+            full_msg = ''
+
+        print("x value:", xval, "  y value:", yval)
 
     print(full_msg)
     print(msg)
