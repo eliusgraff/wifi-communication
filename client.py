@@ -1,8 +1,8 @@
 #client script
 import socket
 
-HOST = '10.0.0.207' #this will need to be adjusted for server's ip address
-PORT = 1234
+HOST = '10.0.0.129' 	#	this will need to be adjusted for server's ip address
+PORT = 12345
 HEADERSIZE = 10
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
