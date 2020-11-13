@@ -5,7 +5,7 @@ from time import sleep
 
 yinput = MCP3008(0)
 xinput = MCP3008(1)
-HOST = socket.gethostname()
+HOST = '10.0.0.129'	#	use ifconfig -a to get local and global IP addresss
 PORT = 12345
 HEADERSIZE = 10
 print("hosting on ", HOST)
