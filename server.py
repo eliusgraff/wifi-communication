@@ -38,7 +38,7 @@ while True:
 		client.send(bytes(msg, "utf-8"))
 
 
-		sleep(0.05)
+		sleep(0.1)
 
 	print("connection with ", address, " closed")
 	client.close()
