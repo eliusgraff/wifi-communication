@@ -1,7 +1,11 @@
 #client script
 import socket
 
+<<<<<<< HEAD
 HOST = '10.0.0.207' #this will need to be adjusted for server's ip address
+=======
+HOST = socket.gethostname()
+>>>>>>> parent of b527534... Set up stream
 PORT = 1234
 HEADERSIZE = 10
 
@@ -45,4 +49,6 @@ while True:
         print("x value:", xval, "  y value:", yval)
 
     print(full_msg)
+
+
     print(msg)

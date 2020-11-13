@@ -6,7 +6,7 @@ from time import sleep
 yinput = MCP3008(0)
 xinput = MCP3008(1)
 HOST = socket.gethostname()
-PORT = 12345
+PORT = 1234
 HEADERSIZE = 10
 print("hosting on ", HOST)
 
@@ -23,6 +23,7 @@ while True:
 	msg = "Welcome to Dynamic Securities server!"
 	msg = f'{len(msg):<{HEADERSIZE}}'+msg
 	client.send(bytes(msg,"utf-8"))
+<<<<<<< HEAD
 
 	while True:
 		msg = yinput.value
@@ -45,3 +46,5 @@ while True:
 	msg = input("enter y to listen again or n to close server: ")
 	if msg == 'n':
 		break
+=======
+>>>>>>> parent of b527534... Set up stream
