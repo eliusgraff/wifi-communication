@@ -1,7 +1,7 @@
 #client script
 import socket
 
-HOST = '10.0.0.207'
+HOST = '10.0.0.207' #this will need to be adjusted for server's ip address
 PORT = 1234
 HEADERSIZE = 10
 

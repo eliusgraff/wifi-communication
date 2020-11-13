@@ -1,6 +1,10 @@
 #SERVER SCRIPT
 import socket
+from gpiozero import PWMLED, MCP3008
+from time import sleep
 
+yinput = MCP3008(0)
+xinput = MCP3008(1)
 HOST = socket.gethostname()
 PORT = 12345
 HEADERSIZE = 10
@@ -21,12 +25,14 @@ while True:
 	client.send(bytes(msg,"utf-8"))
 
 	while True:
-		msg = input("data to send: ")
-		if msg == "break":
-			break
+		msg = "yposition: ", yinput.value, "	xposition", xinput.value"
+		#if msg == "break":
+		#	break
 
 		msg = f'{len(msg):<{HEADERSIZE}}'+msg
 		client.send(bytes(msg, "utf-8"))
+		
+		sleep(0.05)
 
 	print("connection with ", address, " closed")
 	client.close()
