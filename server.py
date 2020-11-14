@@ -3,6 +3,7 @@ import socket
 import struct
 from gpiozero import PWMLED, MCP3008
 from time import sleep
+import pickle
 
 yinput = MCP3008(0)
 xinput = MCP3008(1)
@@ -28,13 +29,14 @@ while True:
 
 	while True:
 		sleep(0.5)
-		msg = str(xinput.value)
+		joystickpos = (xinput.value, yinput.value)
+		msg = pickle.dumps (joystickpos)
 		#print("xval ", msg)
 		
-		msg = f'{len(msg):<{HEADERSIZE}}' + msg
+		msg = bytes(f'{len(msg):<{HEADERSIZE}}', "utf-8") + msg
 		#print(msg)
 		#print("bytes look like: ", bytes(msg, "utf-8"))
-		client.send(bytes(msg, "utf-8"))
+		client.send(msg)
 
 
 	print("connection with ", address, " closed")
