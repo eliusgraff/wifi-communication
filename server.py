@@ -1,13 +1,15 @@
 #SERVER SCRIPT
 import socket
+import struct
 from gpiozero import PWMLED, MCP3008
 from time import sleep
 
 yinput = MCP3008(0)
 xinput = MCP3008(1)
-HOST = '10.0.0.129'	#	use ifconfig -a to get local and global IP addresss
-PORT = 12345
-HEADERSIZE = 10
+#HOST = '10.0.0.129'	#	use ifconfig -a to get local and global IP addresss
+HOST = socket.gethostname()
+PORT = 1234
+HEADERSIZE = 3
 print("hosting on ", HOST)
 
 myServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,24 +23,19 @@ while True:
 	print("connection from", address, " has been established!")
 
 	msg = "Welcome to Dynamic Securities server!"
-	msg = f'{len(msg):<{HEADERSIZE}}'+msg
+	msg = f'{len(msg):<{HEADERSIZE}}'+ msg
 	client.send(bytes(msg,"utf-8"))
 
 	while True:
-		msg = yinput.value
-		#if msg == "break":
-		#	break
-
-		msg = f'{len(msg):<{HEADERSIZE}}'+msg
-		client.send(bytes(msg, "utf-8"))
-
-		msg = xinput.value
+		sleep(0.5)
+		msg = str(xinput.value)
+		#print("xval ", msg)
 		
-		msg = f'{len(msg):<{HEADERSIZE}}'+msg
+		msg = f'{len(msg):<{HEADERSIZE}}' + msg
+		#print(msg)
+		#print("bytes look like: ", bytes(msg, "utf-8"))
 		client.send(bytes(msg, "utf-8"))
 
-
-		sleep(0.1)
 
 	print("connection with ", address, " closed")
 	client.close()
