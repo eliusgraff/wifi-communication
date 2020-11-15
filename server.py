@@ -7,9 +7,9 @@ import pickle
 
 yinput = MCP3008(0)
 xinput = MCP3008(1)
-#HOST = '10.0.0.129'	#	use ifconfig -a to get local and global IP addresss
-HOST = socket.gethostname()
-PORT = 1234
+HOST = '10.0.0.129'	#	use ifconfig -a to get local and global IP addresss
+#HOST = socket.gethostname()
+PORT = 12345
 HEADERSIZE = 3
 print("hosting on ", HOST)
 
@@ -28,7 +28,7 @@ while True:
 	client.send(bytes(msg,"utf-8"))
 
 	while True:
-		sleep(0.5)
+		sleep(0.1)
 		joystickpos = (xinput.value, yinput.value)
 		msg = pickle.dumps (joystickpos)
 		#print("xval ", msg)
