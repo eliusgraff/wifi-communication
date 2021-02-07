@@ -9,7 +9,7 @@ yinput = MCP3008(0)
 xinput = MCP3008(1)
 HOST = '192.168.14.92'	#	use ifconfig -a to get local and global IP addresss --- used hostname -I for school IP
 #HOST = socket.gethostname()
-PORT = 55555
+PORT = 1234
 HEADERSIZE = 3
 print("hosting on ", HOST)
 

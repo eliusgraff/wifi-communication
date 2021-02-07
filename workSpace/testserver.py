@@ -1,4 +1,3 @@
-#Testing SERVER SCRIPT
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -9,4 +8,3 @@ while True:
   clientsocket, address = s.accept()
   print("connection from ", address," has been established!")
   clientsocket.send(bytes("Welcome to Dynamic Securities Server!", "utf-8"))
-
