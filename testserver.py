@@ -2,8 +2,8 @@
 import socket
 import time
 
-HOST = '10.0.0.220'
-PORT = 1235
+HOST = '127.0.1.1'
+PORT = 1234
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST,PORT))
@@ -20,3 +20,4 @@ while True:
     clientsocket.send(bytes(str(mycount), 'utf-8'))
     mycount += 1
     time.sleep(1)
+

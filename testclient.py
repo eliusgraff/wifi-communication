@@ -1,10 +1,13 @@
 import socket
 
-HOST = '192.168.14.92'
-PORT = 1234
+HOST = '127.0.0.1'
+PORT = 8888
 
-s = socket.socket(socket.AF_INET, socket.SOCKSTREAM)
-s.connect((HOST, 1234))
+print("trying to connect")
 
-msg = s.recv(1024)
-print(msg.decode("utf-8"))
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((HOST, PORT))
+
+while True:
+  msg = s.recv(1024)
+  print(msg.decode("utf-8"))
