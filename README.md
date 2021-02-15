@@ -4,27 +4,22 @@ Seattle Pacific University
 
 This repo contains both the client and server scripts for the Bird's Eye secutiry camera
 
-# 1.2 #
+# 2.1 #
 
-Server script:
-Sets up socket on hard-coded port with IP address given to Pi by local network 
-Listens for connection once that socket is opened (currently can only make 1 connection)
-A 3-byte header is used to tell client how much data is being sent, this could be changed to accomodate larger variable-length 
-messages (not necessary for current implementation)
-Reads X and Y joystick data from 3008 chip with PRI class
-Pickles the X,Y touple before sending data to client with UTF-8 bytes
+The original client and server scripts have been kept for potential future use. While using the Pies as a access point and station, I ran into some
+issues that I couldn't easily solve. This latest commit indicates most recent pivot away from the Raspberry Pies and toward the ESP8266 modules.
 
-Client script:
-Sets up socket and tries to connect to hard-coded IP/port combo (should be the same as used to set up server socket)
-Once conection is made, recieves 50 byte welcome message
-In while loop, listens for 24 byte messages plus the size of message headers (again, header size should be consistent with 
-server script). 
-*NOTE* Since the 2-value folating point touples are always exactly 24 bytes, the client recieves exactly the 
-size of each structure sent, this makes processing a little less complicated. This could be changed to accomodate a variable 
-length message though. 
-When full message is recieved (this check is for addition of varibale-length messages later on down the road if we want/need to) 
-the bytes are un-pickled and sent to the LightLed function.
-The LightLed function represents the data sent as directions that motors would be controlled to move to once connected. LEDs are
-driven by the PWMLED class from gpiozero library.
-After LightLed function is called, the message flags/variables are cleared and begins listening for the next message.
 
+ESP Server:
+Rather than using sockets, the ESPs have a 'esp-now' feature which will be how the server will be communicating with the motor controllers. The server
+sets itself up as the master for the ESP-Now connection and waits for another ESP module with the hard-coded MAC address to connect wih it. Once that
+connection is established, the server sends that secondary device the user-input data it reads from a MCP3008 chip (connected to a joystick).
+
+Future development involves adding 2 more secondary devices for the user-input to control motors in various parts of the project. This will also 
+involve adding another joystick to the UI.
+
+ESP Client:
+This just connects to the Server and is read off the data sent to it to the serial terminal.
+
+Future developemnt here is involving adding motor control signals to control a DC motor. To implement this, I want to test the hardware to make sure this
+implementation will indeed work.
