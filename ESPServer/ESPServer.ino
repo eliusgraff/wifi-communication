@@ -2,13 +2,8 @@
 #include <espnow.h>
 #include <SPI.h>
 #include <Adafruit_MCP3008.h>
-
-
-
 // REPLACE WITH RECEIVER MAC Address
 uint8_t broadcastAddress1[] = {0x3C, 0x61, 0x05, 0xCF, 0xB4, 0x6B};
-//uint8_t broadcastAddress2[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-
 // Structure example to send data
 // Must match the receiver structure
 typedef struct user_input {
@@ -43,8 +38,6 @@ void setup() {
   // Init Serial Monitor
   Serial.begin(9600);
   delay(1000);
-  
-  //Serial.print(sizeof(currentPos));
  
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
@@ -55,7 +48,6 @@ void setup() {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
-
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
   
   // Once ESPNow is successfully Init, we will register for Send CB to
@@ -64,11 +56,8 @@ void setup() {
   
   // Register peer
   esp_now_add_peer(broadcastAddress1, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
-  //esp_now_add_peer(broadcastAddress2, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
 
   adc.begin( D5, D7, D6, D8);
-
-  
 
 }
  
