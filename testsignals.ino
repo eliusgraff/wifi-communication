@@ -1,13 +1,16 @@
 #include <ESP8266WiFi.h>
+#define FORWARD 12
+#define BACK 14
 
 void setup() {
-  // put your setup code here, to run once:
 
   Serial.begin(9600);
-  delay(1000);
+  //delay(1000);
   Serial.print("starting");
-  pinMode(12,OUTPUT);
-  pinMode(3,OUTPUT);
+
+  pinMode(FORWARD,OUTPUT);
+  pinMode(BACK,OUTPUT);
+  
   analogWriteFreq(100);
 }
 
@@ -19,24 +22,25 @@ void SendControlSignal( int pos )
 
 //'dead' area where nothing should happen
   if( abs(pos) < 30 ){
-    analogWrite(12, 0);
+    analogWrite(FORWARD, 0);
+    analogWrite(BACK, 0);
     Serial.println( "dead area ");
     return;
   }
 
-//Setting direction signal
+//Sending control signals
   if ( pos <  0 ){
     Serial.println( "negative");
-    digitalWrite(3,1);
+    analogWrite(FORWARD,0);
+    analogWrite(BACK,2*abs(pos));
   }
 
   else{
     Serial.println( "positive");
-    digitalWrite(3,0);
+    analogWrite(BACK,0);
+    analogWrite(FORWARD, 2*pos);
   }
-
-  analogWrite(12, 2*abs(pos));
-  
+ 
 }
 
 
@@ -46,8 +50,8 @@ void loop() {
   // put your main code here, to run repeatedly:
   randnum = random(1023);
   Serial.println( randnum );
-  Serial.println( "processing signal now" );
+  //Serial.println( "processing signal now" );
   SendControlSignal ( randnum );
-  Serial.println( "signal Processed" );
-  delay(500);  
+  //Serial.println( "signal Processed" );
+  delay(100);  // max speed tested at is 10 data points/sec
 }
