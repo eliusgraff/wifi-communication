@@ -7,7 +7,7 @@
 
 // REPLACE WITH RECEIVER MAC Address
 uint8_t broadcastAddress1[] = {0x3C, 0x61, 0x05, 0xD1, 0x4A, 0x4D};
-//uint8_t broadcastAddress2[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+uint8_t broadcastAddress2[] = {0x3C, 0x61, 0x05, 0xCF, 0xB4, 0x6B};
 
 // Structure example to send data
 // Must match the receiver structure
@@ -23,15 +23,26 @@ user_input currentPos;
 
 static int SIZE = sizeof(currentPos);
 
+
+
+
+
+
+
+
 // Callback when data is sent
 void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
   
   digitalWrite(LED_BUILTIN, LOW);
   char macStr[18];
+
+  
   Serial.print("Packet to:");
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
          mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   Serial.print(macStr);
+
+  
   Serial.print(" send status: ");
   if (sendStatus == 0){
     Serial.println("Delivery success");
@@ -43,6 +54,17 @@ void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
 digitalWrite(LED_BUILTIN, HIGH);
   
 }
+
+
+
+
+
+
+
+
+
+
+
  
 void setup() {
   // Init Serial Monitor
@@ -72,7 +94,7 @@ void setup() {
   
   // Register peer
   esp_now_add_peer(broadcastAddress1, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
-  //esp_now_add_peer(broadcastAddress2, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
+  esp_now_add_peer(broadcastAddress2, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
 
   adc.begin( D5, D7, D6, D8);
 
@@ -81,7 +103,7 @@ void setup() {
 void loop() {
   
     // Set values to send
-    currentPos.x = adc.readADC(2);
+    currentPos.x = adc.readADC(0);
     currentPos.y = adc.readADC(1);
     Serial.print("X: ");
     Serial.print(currentPos.x);
@@ -90,5 +112,6 @@ void loop() {
     
     // Send message via ESP-NOW
     esp_now_send(0, (uint8_t *) &currentPos, SIZE);
+
     delay(100);
 }
