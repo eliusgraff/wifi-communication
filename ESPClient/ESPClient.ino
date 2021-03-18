@@ -40,7 +40,7 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 
 
 //orienting position
-   int myPos = pos.y - 492;
+   int myPos = pos.x - 520;
 
 //'dead' area where nothing should happen
   if( abs(myPos) < 100 ){

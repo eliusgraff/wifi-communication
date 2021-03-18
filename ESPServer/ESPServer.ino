@@ -3,8 +3,6 @@
 #include <SPI.h>
 #include <Adafruit_MCP3008.h>
 
-
-
 // REPLACE WITH RECEIVER MAC Address
 uint8_t broadcastAddress1[] = {0x3C, 0x61, 0x05, 0xD1, 0x4A, 0x4D};
 uint8_t broadcastAddress2[] = {0x3C, 0x61, 0x05, 0xCF, 0xB4, 0x6B};
@@ -22,12 +20,6 @@ Adafruit_MCP3008 adc;
 user_input currentPos;
 
 static int SIZE = sizeof(currentPos);
-
-
-
-
-
-
 
 
 // Callback when data is sent
@@ -54,15 +46,6 @@ void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
 digitalWrite(LED_BUILTIN, HIGH);
   
 }
-
-
-
-
-
-
-
-
-
 
 
  
@@ -99,6 +82,7 @@ void setup() {
   adc.begin( D5, D7, D6, D8);
 
 }
+
  
 void loop() {
   
@@ -111,7 +95,11 @@ void loop() {
     Serial.println(currentPos.y);
     
     // Send message via ESP-NOW
+
+    
     esp_now_send(0, (uint8_t *) &currentPos, SIZE);
+
+    
 
     delay(100);
 }
