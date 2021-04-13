@@ -1,40 +1,50 @@
 
-/*
- Stepper Motor Control - one step at a time
-
- This program drives a unipolar or bipolar stepper motor.
- The motor is attached to digital pins 8 - 11 of the Arduino.
-
- The motor will step one step at a time, very slowly.  You can use this to
- test that you've got the four wires of your stepper wired to the correct
- pins. If wired correctly, all steps should be in the same direction.
-
- Use this also to count the number of steps per revolution of your motor,
- if you don't know it.  Then plug that number into the oneRevolution
- example to see if you got it right.
-
- Created 30 Nov. 2009
- by Tom Igoe
-
- */
-
-#include <Stepper.h>
-
-
+#include <ESP8266WiFi.h>
+#include <espnow.h>
 #define BLUE D5
 #define PINK D6
 #define YELLOW D7
 #define ORANGE D8
 
-const int stepsPerRevolution = 64;  // change this to fit the number of steps per revolution
-// for your motor
+typedef struct user_input {
+    int x;
+    int y;
+} user_input;
 
-int stepCount = 0;         // number of steps the motor has taken
+user_input pos;
 
 int currentStep = 0;
 
-void Step (int dir)
-{
+int totalStep = 0;
+
+int dir = 1;
+
+void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
+  memcpy(&pos, incomingData, sizeof(pos));
+  //Serial.print("Bytes received: ");
+  //Serial.println(len);            leave in for debugging if necessary
+  Serial.print("x: ");
+  Serial.println(pos.x);
+  Serial.print("y: ");
+  Serial.println(pos.y);
+  Serial.println();  
+
+  DriveMotor(&pos);
+  
+}
+
+void DriveMotor (user_input *currentPos){
+
+  int mag = abs(currentPos.x);
+  int currentDir = currentPos.x / mag;
+
+  for (int i = 0 ; i < mag ; i++){
+    Step(currentDir);
+    delay(3);
+  }
+}
+
+void Step (int dir){
   
   currentStep += 2*dir;
   
@@ -47,10 +57,9 @@ void Step (int dir)
   else if(currentStep == -1)
     currentStep = 7;
 
-  Serial.println(currentStep);
+  //Serial.println(currentStep);
   
-  switch (currentStep)
-  {
+  switch (currentStep){
     case 1:
       digitalWrite(ORANGE, LOW);
       digitalWrite(YELLOW, LOW);
@@ -118,8 +127,7 @@ void Step (int dir)
   } 
 }
 
-void StopMotor ()
-{
+void StopMotor (){
     digitalWrite(ORANGE, LOW);
     digitalWrite(YELLOW, LOW);
     digitalWrite(PINK, LOW);
@@ -137,27 +145,15 @@ void setup() {
   pinMode(ORANGE, OUTPUT);
 }
 
-void loop() {
 
+void loop() {  
+  if(totalStep > 1050 || totalStep < 0)
+    dir = -1*dir;
 
-  int dir = -1;
-
-  // step one step:
-
-  if (stepCount == 1000){
-    stepCount = 0;
-    Serial.println("STOP!!");
-    StopMotor();
-    delay(5000);
-    Serial.print("reverse direction: ");
-    dir = dir*(-1);
-    Serial.println(dir);
-  }
-    
-    
+  totalStep += dir;
   Step(dir);
-  Serial.print("steps:");
-  //Serial.println(stepCount);
-  stepCount++;
+  //StopMotor(); //this can be added in case of higher-efficienccy, lower torque-applications
+  Serial.println(totalStep);
   delay(3);
+  
 }
