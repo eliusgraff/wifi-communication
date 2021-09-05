@@ -5,13 +5,13 @@
 
 // REPLACE WITH RECEIVER MAC Address
 uint8_t broadcastAddress1[] = {0x3C, 0x61, 0x05, 0xD1, 0x4A, 0x4D};
-uint8_t broadcastAddress2[] = {0x3C, 0x61, 0x05, 0xCF, 0xB4, 0x6B};
+uint8_t broadcastAddress2[] = {0xE8, 0xDB, 0x84, 0x9C, 0x3C, 0x64};
 
 // Structure example to send data
 // Must match the receiver structure
 typedef struct user_input {
-    int x;
-    int y;
+  int x;
+  int y;
 } user_input;
 
 Adafruit_MCP3008 adc;
@@ -21,41 +21,40 @@ user_input currentPos;
 
 static int SIZE = sizeof(currentPos);
 
-
 // Callback when data is sent
 void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
-  
+
   digitalWrite(LED_BUILTIN, LOW);
   char macStr[18];
 
-  
+
   Serial.print("Packet to:");
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
-         mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+           mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   Serial.print(macStr);
 
-  
+
   Serial.print(" send status: ");
-  if (sendStatus == 0){
+  if (sendStatus == 0) {
     Serial.println("Delivery success");
   }
-  else{
+  else {
     Serial.println("Delivery fail");
   }
 
-digitalWrite(LED_BUILTIN, HIGH);
-  
+  digitalWrite(LED_BUILTIN, HIGH);
+
 }
 
 
- 
+
 void setup() {
   // Init Serial Monitor
   Serial.begin(9600);
   delay(1000);
-  
+
   //Serial.print(sizeof(currentPos));
- 
+
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -68,13 +67,13 @@ void setup() {
 
 
   pinMode(LED_BUILTIN, OUTPUT);
-   
+
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
-  
+
   // Once ESPNow is successfully Init, we will register for Send CB to
   // get the status of Trasnmitted packet
   esp_now_register_send_cb(OnDataSent);
-  
+
   // Register peer
   esp_now_add_peer(broadcastAddress1, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
   esp_now_add_peer(broadcastAddress2, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
@@ -83,23 +82,30 @@ void setup() {
 
 }
 
- 
+
 void loop() {
-  
-    // Set values to send
-    currentPos.x = adc.readADC(0);
-    currentPos.y = adc.readADC(1);
-    Serial.print("X: ");
-    Serial.print(currentPos.x);
-    Serial.print("Y: ");
-    Serial.println(currentPos.y);
-    
-    // Send message via ESP-NOW
 
-    
-    esp_now_send(0, (uint8_t *) &currentPos, SIZE);
+  // Set values to send
+  currentPos.x = adc.readADC(0);
+  currentPos.y = adc.readADC(1);
+  Serial.print("X: ");
+  Serial.print(currentPos.x);
+  Serial.print("Y: ");
+  Serial.println(currentPos.y);
 
-    
+  currentPos.x = adc.readADC(0);
+  currentPos.y = adc.readADC(1);
+  Serial.print("X1: ");
+  Serial.print(adc.readADC(2));
+  Serial.print("Y1: ");
+  Serial.println(adc.readADC(3));
 
-    delay(100);
+  // Send message via ESP-NOW
+
+
+  esp_now_send(0, (uint8_t *) &currentPos, SIZE);
+
+
+
+  delay(100);
 }

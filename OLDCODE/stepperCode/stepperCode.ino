@@ -6,58 +6,18 @@
 #define YELLOW D7
 #define ORANGE D8
 
-typedef struct user_input {
-    int x;
-    int y;
-} user_input;
-
-user_input pos;
-
 int currentStep = 0;
-
-int totalStep = 0;
-
-int dir = 1;
-
-void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
-  memcpy(&pos, incomingData, sizeof(pos));
-  //Serial.print("Bytes received: ");
-  //Serial.println(len);            leave in for debugging if necessary
-  Serial.print("x: ");
-  Serial.println(pos.x);
-  Serial.print("y: ");
-  Serial.println(pos.y);
-  Serial.println();  
-
-  DriveMotor(&pos);
-  
-}
-
-void DriveMotor (user_input *currentPos){
-
-  int mag = abs(currentPos.x);
-  int currentDir = currentPos.x / mag;
-
-  for (int i = 0 ; i < mag ; i++){
-    Step(currentDir);
-    delay(3);
-  }
-}
 
 void Step (int dir){
   
   currentStep += 2*dir;
   
-  if (currentStep == 9)
-    currentStep = 1;
-  else if (currentStep == 10)
+  if (currentStep > 8)
     currentStep = 2;
-  else if(currentStep == 0)
+  else if(currentStep < 2)
     currentStep = 8;
-  else if(currentStep == -1)
-    currentStep = 7;
 
-  //Serial.println(currentStep);
+  Serial.println(currentStep);
   
   switch (currentStep){
     case 1:
@@ -127,6 +87,15 @@ void Step (int dir){
   } 
 }
 
+void DriveMotor (int currentPos){
+
+  if(currentPos > 850)
+    Step(1);
+
+  else if(currentPos < 700)
+    Step(-1);
+}
+
 void StopMotor (){
     digitalWrite(ORANGE, LOW);
     digitalWrite(YELLOW, LOW);
@@ -145,15 +114,13 @@ void setup() {
   pinMode(ORANGE, OUTPUT);
 }
 
+int sensorValue;
 
 void loop() {  
-  if(totalStep > 1050 || totalStep < 0)
-    dir = -1*dir;
 
-  totalStep += dir;
-  Step(dir);
-  //StopMotor(); //this can be added in case of higher-efficienccy, lower torque-applications
-  Serial.println(totalStep);
+  sensorValue = analogRead(A0);
+  Serial.println(sensorValue);
+  DriveMotor(sensorValue);
   delay(3);
   
 }

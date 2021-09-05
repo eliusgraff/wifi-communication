@@ -3,6 +3,7 @@
 #define FORWARD 14
 #define BACK 12
 
+bool msg = false;
 
 // Structure example to receive data
 // Must match the sender structure
@@ -38,9 +39,9 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   Serial.println(pos.y);
   Serial.println();
 
-
+  msg = true;
 //orienting position
-   int myPos = pos.x - 520;
+   int myPos = pos.y - 520;
 
 //'dead' area where nothing should happen
   if( abs(myPos) < 100 ){
@@ -94,9 +95,15 @@ void setup() {
 
 void loop() {
 
+  msg = false;
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(1000);                       // wait for a second
+  if(!msg){
+    analogWrite(FORWARD, 0);
+    analogWrite(BACK, 0);
+  }
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(1000);                       // wait for a second
-
+  
+  
 }
